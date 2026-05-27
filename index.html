@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[Your Name] | Math Educator & Ed Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:       #1B3A8C;
+  --blue-dark:  #0F2260;
+  --blue-mid:   #2952C4;
+  --yellow:     #FFD100;
+  --off-white:  #F7F4ED;
+  --off-white-2:#EAE7DF;
+  --white:      #FFFFFF;
+  --text:       #1A1A2E;
+  --text-muted: #5A5A7A;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--off-white);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Graph-paper background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(27,58,140,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(27,58,140,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── NAV ─────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--blue-dark);
+  box-shadow: 0 2px 20px rgba(15,34,96,0.45);
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+.nav-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: var(--yellow);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.nav-brand em {
+  color: rgba(247,244,237,0.5);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+.nav-tabs { display: flex; }
+.nav-tab {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247,244,237,0.5);
+  padding: 1.1rem 1.35rem;
+  border: none;
+  background: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.nav-tab:hover { color: rgba(247,244,237,0.85); }
+.nav-tab.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+
+/* ── PAGES ───────────────────────────── */
+.page { display: none; position: relative; z-index: 1; min-height: calc(100vh - 52px); }
+.page.active { display: block; animation: fadeUp 0.35s ease both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SHARED HEADER ───────────────────── */
+.page-header {
+  background: var(--blue-dark);
+  padding: 4.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.page-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+.mw {
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  color: rgba(255,209,0,0.07);
+  pointer-events: none;
+  line-height: 1;
+  user-select: none;
+}
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  opacity: 0.8;
+  margin-bottom: 0.8rem;
+}
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  font-weight: 900;
+  color: var(--off-white);
+  line-height: 1.07;
+}
+.page-title em { color: var(--yellow); font-style: italic; }
+.page-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: rgba(247,244,237,0.45);
+  margin-top: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+/* ── ABOUT ───────────────────────────── */
+.hero-bio-wrap { max-width: 620px; margin-top: 1.5rem; }
+.hero-bio {
+  font-size: 1.05rem;
+  line-height: 1.82;
+  color: rgba(247,244,237,0.8);
+}
+.hero-bio strong { color: var(--yellow); font-weight: 700; }
+.chips { display: flex; gap: 0.55rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  background: rgba(255,209,0,0.1);
+  border: 1px solid rgba(255,209,0,0.28);
+  padding: 0.33rem 0.75rem;
+  border-radius: 2px;
+}
+
+.content-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3.5rem 2rem;
+}
+.sec-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.4rem;
+}
+.sec-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--blue-dark);
+  margin-bottom: 2rem;
+}
+.sec-heading em { color: var(--blue-mid); font-style: italic; }
+
+.accolades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.2rem;
+}
+.accolade-card {
+  background: var(--white);
+  border-radius: 3px;
+  padding: 1.6rem;
+  border-left: 4px solid var(--yellow);
+  box-shadow: 0 1px 8px rgba(27,58,140,0.07);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.accolade-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(27,58,140,0.14);
+}
+.accolade-icon { font-size: 1.55rem; margin-bottom: 0.7rem; }
+.accolade-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--blue-dark);
+  margin-bottom: 0.35rem;
+}
+.accolade-desc { font-size: 0.87rem; color: var(--text-muted); line-height: 1.6; }
+
+.eq-bar {
+  background: var(--blue);
+  padding: 1.4rem 2rem;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: rgba(247,244,237,0.65);
+  letter-spacing: 0.03em;
+}
+.eq-bar .hl { color: var(--yellow); font-weight: 500; }
+
+/* ── PROJECTS ────────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.75rem;
+}
+.project-card {
+  background: var(--white);
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 1px 8px rgba(27,58,140,0.07);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(27,58,140,0.16);
+}
+.project-top {
+  background: var(--blue);
+  padding: 1.75rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.project-sym {
+  position: absolute;
+  right: 0.5rem;
+  bottom: -0.8rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem;
+  color: rgba(255,255,255,0.07);
+  line-height: 1;
+  pointer-events: none;
+}
+.project-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  color: var(--yellow);
+  opacity: 0.7;
+  margin-bottom: 0.35rem;
+}
+.project-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--off-white);
+  position: relative;
+  z-index: 1;
+}
+.project-body {
+  padding: 1.4rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.project-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.68; flex: 1; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--off-white);
+  color: var(--blue);
+  border: 1px solid rgba(27,58,140,0.18);
+  padding: 0.28rem 0.65rem;
+  border-radius: 2px;
+}
+.project-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--blue-mid);
+  text-decoration: none;
+  border-bottom: 2px solid var(--yellow);
+  padding-bottom: 2px;
+  transition: color 0.2s;
+}
+.project-link:hover { color: var(--blue-dark); }
+
+/* ── CONTACT ─────────────────────────── */
+.contact-wrap { max-width: 700px; margin: 0 auto; padding: 3.5rem 2rem; }
+.contact-card {
+  background: var(--white);
+  border-radius: 4px;
+  padding: 2.5rem;
+  box-shadow: 0 2px 16px rgba(27,58,140,0.09);
+}
+.form-group { margin-bottom: 1.35rem; }
+.form-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.45rem;
+}
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--off-white-2);
+  border-radius: 3px;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--off-white);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  appearance: none;
+}
+.form-input:focus, .form-textarea:focus {
+  border-color: var(--blue);
+  background: var(--white);
+}
+.form-textarea { height: 130px; resize: vertical; }
+.btn-send {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--blue-dark);
+  color: var(--yellow);
+  border: none;
+  padding: 0.95rem 2.2rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-send:hover { background: var(--blue-mid); transform: translateY(-2px); }
+
+.socials {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--off-white-2);
+}
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--blue);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.social-link:hover { color: var(--blue-dark); }
+.social-icon {
+  width: 34px;
+  height: 34px;
+  background: var(--blue-dark);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.social-link:hover .social-icon { background: var(--blue-mid); }
+
+/* ── FOOTER ──────────────────────────── */
+footer {
+  text-align: center;
+  padding: 1.75rem 2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.09em;
+  color: var(--text-muted);
+  border-top: 1px solid var(--off-white-2);
+  position: relative;
+  z-index: 1;
+}
+footer .yl { color: var(--yellow); }
+
+/* ── RESPONSIVE ──────────────────────── */
+@media (max-width: 640px) {
+  .nav-tab { padding: 0.9rem 0.8rem; font-size: 0.65rem; }
+  .nav-brand { font-size: 1.05rem; }
+  .page-header { padding: 3rem 1.25rem 2.5rem; }
+  .content-section, .contact-wrap { padding: 2.5rem 1.25rem; }
+  .contact-card { padding: 1.75rem 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">f(x) <em>= [your name]</em></div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-target="about">About</button>
+      <button class="nav-tab" data-target="projects">Projects</button>
+      <button class="nav-tab" data-target="contact">Contact</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════ ABOUT PAGE ══════════ -->
+<section id="about" class="page active">
+  <div class="page-header">
+    <div class="mw" style="font-size:11rem;top:-1.5rem;right:3%">π</div>
+    <div class="mw" style="font-size:9rem;bottom:-2rem;left:1.5%">∑</div>
+    <div class="mw" style="font-size:7rem;top:8%;right:22%">√</div>
+    <div class="page-header-inner">
+      <p class="eyebrow">// math educator · ed tech · problem solver</p>
+      <h1 class="page-title">Hello, I'm<br><em>[Your Name].</em></h1>
+      <div class="hero-bio-wrap">
+        <p class="hero-bio">
+          I believe every student has a <strong>mathematical mind</strong> waiting to be unlocked. I bring together <strong>classroom experience</strong>, a passion for <strong>educational technology</strong>, and a deep love of math to help learners of all kinds find their footing — and their confidence.
+        </p>
+        <div class="chips">
+          <span class="chip">Math Education</span>
+          <span class="chip">Ed Tech</span>
+          <span class="chip">Curriculum Design</span>
+          <span class="chip">K–12</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="sec-label">// achievements & background</p>
+    <h2 class="sec-heading">Accolades & <em>Milestones</em></h2>
+    <div class="accolades-grid">
+      <div class="accolade-card">
+        <div class="accolade-icon">🎓</div>
+        <div class="accolade-title">Education</div>
+        <div class="accolade-desc">Your degree, major, and university. Certifications, licensure, or any additional credentials worth highlighting.</div>
+      </div>
+      <div class="accolade-card">
+        <div class="accolade-icon">🏆</div>
+        <div class="accolade-title">Award or Recognition</div>
+        <div class="accolade-desc">A professional award, grant, or recognition — at the district, state, or national level. What was it for?</div>
+      </div>
+      <div class="accolade-card">
+        <div class="accolade-icon">📐</div>
+        <div class="accolade-title">Teaching Experience</div>
+        <div class="accolade-desc">X years in the classroom. Include grade levels, subjects taught, districts served, and anything distinctive.</div>
+      </div>
+      <div class="accolade-card">
+        <div class="accolade-icon">💡</div>
+        <div class="accolade-title">Ed Tech Innovation</div>
+        <div class="accolade-desc">Tools built, curriculum designed, or programs launched. Your footprint in the ed tech space.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="eq-bar">
+    <span class="hl">knowledge + curiosity</span> = growth &nbsp;·&nbsp; because math is the language of the universe.
+  </div>
+
+  <footer>built with <span class="yl">logic</span> & ☕ &nbsp;·&nbsp; [your name] &nbsp;·&nbsp; [year]</footer>
+</section>
+
+<!-- ══════════ PROJECTS PAGE ══════════ -->
+<section id="projects" class="page">
+  <div class="page-header">
+    <div class="mw" style="font-size:10rem;top:-1rem;right:4%">Δ</div>
+    <div class="mw" style="font-size:8rem;bottom:-1rem;left:2%">θ</div>
+    <div class="page-header-inner">
+      <p class="eyebrow">// things i've built & explored</p>
+      <h1 class="page-title">My <em>Projects</em></h1>
+      <p class="page-subtitle">ed tech tools · curriculum design · research · experiments</p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-sym">∑</div>
+          <p class="project-num">// project 01</p>
+          <h3 class="project-title">Project Title One</h3>
+        </div>
+        <div class="project-body">
+          <p class="project-desc">Describe your first project here. What problem did it solve? Who was the audience? What was the outcome in the classroom or ed tech space?</p>
+          <div class="tags">
+            <span class="tag">Ed Tech</span>
+            <span class="tag">Math</span>
+            <span class="tag">K–12</span>
+          </div>
+          <a href="#" class="project-link">View Project →</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-sym">π</div>
+          <p class="project-num">// project 02</p>
+          <h3 class="project-title">Project Title Two</h3>
+        </div>
+        <div class="project-body">
+          <p class="project-desc">Your second project. Maybe a curriculum you designed, a tool you built, or research you led. Keep it clear, specific, and impactful.</p>
+          <div class="tags">
+            <span class="tag">Curriculum</span>
+            <span class="tag">Design</span>
+            <span class="tag">Research</span>
+          </div>
+          <a href="#" class="project-link">View Project →</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-sym">∫</div>
+          <p class="project-num">// project 03</p>
+          <h3 class="project-title">Project Title Three</h3>
+        </div>
+        <div class="project-body">
+          <p class="project-desc">A third project — maybe a data visualization, interactive tool, or anything you're proud to showcase. Let your work speak for itself.</p>
+          <div class="tags">
+            <span class="tag">Data</span>
+            <span class="tag">Technology</span>
+            <span class="tag">Innovation</span>
+          </div>
+          <a href="#" class="project-link">View Project →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>built with <span class="yl">logic</span> & ☕ &nbsp;·&nbsp; [your name] &nbsp;·&nbsp; [year]</footer>
+</section>
+
+<!-- ══════════ CONTACT PAGE ══════════ -->
+<section id="contact" class="page">
+  <div class="page-header">
+    <div class="mw" style="font-size:11rem;top:-1.5rem;right:3%">λ</div>
+    <div class="mw" style="font-size:8rem;bottom:-1rem;left:2%">∞</div>
+    <div class="page-header-inner">
+      <p class="eyebrow">// let's connect</p>
+      <h1 class="page-title">Get in <em>Touch</em></h1>
+      <p class="page-subtitle">collaborate · reach out · say hello</p>
+    </div>
+  </div>
+
+  <div class="contact-wrap">
+    <div class="contact-card">
+      <div class="form-group">
+        <label class="form-label">// your name</label>
+        <input type="text" class="form-input" placeholder="Jane Smith">
+      </div>
+      <div class="form-group">
+        <label class="form-label">// email address</label>
+        <input type="email" class="form-input" placeholder="jane@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">// message</label>
+        <textarea class="form-textarea" placeholder="Hi! I'd love to connect about..."></textarea>
+      </div>
+      <button class="btn-send">Send Message →</button>
+
+      <div class="socials">
+        <a href="#" class="social-link">
+          <div class="social-icon">💼</div>
+          LinkedIn
+        </a>
+        <a href="#" class="social-link">
+          <div class="social-icon">🐙</div>
+          GitHub
+        </a>
+        <a href="#" class="social-link">
+          <div class="social-icon">✉️</div>
+          Email Me
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer>built with <span class="yl">logic</span> & ☕ &nbsp;·&nbsp; [your name] &nbsp;·&nbsp; [year]</footer>
+</section>
+
+<script>
+const tabs  = document.querySelectorAll('.nav-tab');
+const pages = document.querySelectorAll('.page');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t  => t.classList.remove('active'));
+    pages.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.target).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
